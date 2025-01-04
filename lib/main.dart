@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'hydration_config_screen.dart';
+import 'screens/name_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HydrationConfigScreen(),
+      home: NameScreen(), // Tela inicial
     );
   }
 }
