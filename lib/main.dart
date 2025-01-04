@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'hydration_config_screen.dart';
 
 void main() {
@@ -9,6 +10,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'HydroAlert',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
       home: HydrationConfigScreen(),
     );
   }
