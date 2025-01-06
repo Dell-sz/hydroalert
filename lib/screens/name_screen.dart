@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'notification_screen.dart';
+import 'weight_screen.dart';
 
 class NameScreen extends StatelessWidget {
   final TextEditingController _nameController = TextEditingController();
@@ -7,22 +7,23 @@ class NameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Configuração - Nome')),
+      appBar: AppBar(
+        title: Text('HydroAlert - Nome'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Como deseja ser chamado?', style: TextStyle(fontSize: 18)),
-            SizedBox(height: 10),
+            Text(
+              'Digite seu nome:',
+              style: TextStyle(fontSize: 18),
+            ),
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Digite seu nome',
-              ),
+              decoration: InputDecoration(hintText: 'Seu nome'),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
                 final name = _nameController.text.trim();
@@ -30,12 +31,16 @@ class NameScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => NotificationScreen(userName: name),
+                      builder: (context) => WeightScreen(name: name),
                     ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Por favor, insira seu nome')),
                   );
                 }
               },
-              child: Text('Avançar'),
+              child: Text('Próximo'),
             ),
           ],
         ),

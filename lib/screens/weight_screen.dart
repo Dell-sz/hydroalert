@@ -1,64 +1,91 @@
 import 'package:flutter/material.dart';
-import 'summary_screen.dart';
+import 'reminder_screen.dart';
 
-class WeightScreen extends StatelessWidget {
-  final String userName;
-  final int notifications;
+class WeightScreen extends StatefulWidget {
+  final String name;
+
+  const WeightScreen({required this.name});
+
+  @override
+  _WeightScreenState createState() => _WeightScreenState();
+}
+
+class _WeightScreenState extends State<WeightScreen> {
   final TextEditingController _currentWeightController = TextEditingController();
-  final TextEditingController _goalWeightController = TextEditingController();
+  final TextEditingController _targetWeightController = TextEditingController();
 
-  WeightScreen({required this.userName, required this.notifications});
+  double? _waterIntake;
+
+  void _calculateWaterIntake() {
+    try {
+      final currentWeight = double.parse(_currentWeightController.text.trim());
+      final targetWeight = double.parse(_targetWeightController.text.trim());
+
+      if (currentWeight > 0 && targetWeight > 0) {
+        setState(() {
+          if (targetWeight < currentWeight) {
+            _waterIntake = currentWeight * 30; // Emagrecendo
+          } else if (targetWeight > currentWeight) {
+            _waterIntake = currentWeight * 50; // Ganho de massa
+          } else {
+            _waterIntake = currentWeight * 40; // Manutenção
+          }
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Insira valores válidos para o peso.')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Configuração - Peso')),
+      appBar: AppBar(
+        title: Text('HydroAlert - Peso'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Qual é o seu peso atual?', style: TextStyle(fontSize: 18)),
-            SizedBox(height: 10),
+            Text(
+              'Digite seu peso atual (kg):',
+              style: TextStyle(fontSize: 18),
+            ),
             TextField(
               controller: _currentWeightController,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ex: 70',
-              ),
+              decoration: InputDecoration(hintText: 'Peso atual'),
             ),
-            SizedBox(height: 16),
-            Text('Qual é sua meta de peso?', style: TextStyle(fontSize: 18)),
             SizedBox(height: 10),
-            TextField(
-              controller: _goalWeightController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Ex: 65',
-              ),
+            Text(
+              'Digite seu peso desejado (kg):',
+              style: TextStyle(fontSize: 18),
             ),
-            SizedBox(height: 16),
+            TextField(
+              controller: _targetWeightController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(hintText: 'Peso desejado'),
+            ),
+            SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                final currentWeight = double.tryParse(_currentWeightController.text.trim());
-                final goalWeight = double.tryParse(_goalWeightController.text.trim());
-                if (currentWeight != null && goalWeight != null) {
+                _calculateWaterIntake();
+                if (_waterIntake != null) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SummaryScreen(
-                        userName: userName,
-                        notifications: notifications,
-                        currentWeight: currentWeight,
-                        goalWeight: goalWeight,
+                      builder: (context) => ReminderScreen(
+                        name: widget.name,
+                        waterIntake: _waterIntake!,
                       ),
                     ),
                   );
                 }
               },
-              child: Text('Avançar'),
+              child: Text('Próximo'),
             ),
           ],
         ),
